@@ -1,24 +1,42 @@
-
 <?php
 
 namespace App\Services;
 
-use App\Models\Issue;
-use Illuminate\Pipeline\Pipeline;
+use Illuminate\Support\Collection;
+use Illuminate\Database\Query\Builder;
+use App\Filters\Issue\IssuePipeline;
 
 class SearchService
 {
-    public function applyFilters(array $filters)
+    /**
+     * @var Collection
+     */
+    protected Collection $filters;
+
+    /**
+     * @param Collection $filters
+     * @return SearchService
+     */
+    public function withFilters(Collection $filters): SearchService
     {
-        return app(Pipeline::class)
-            ->send(Issue::query())
-            ->through([
-                // \App\Filters\TitleFilter::class,
-                // \App\Filters\AssignerFilter::class,
-                // \App\Filters\AssigneeFilter::class,
-                // Добавьте другие фильтры в соответствии с вашими потребностями
-            ])
-            ->thenReturn()
-            ->get();
+        $this->filters = $filters;
+
+        return $this;
+    }
+
+    /**
+     * Filter issues according to requested criteria
+     * 
+     * @param Builder $builder
+     * @return Collection
+     */
+    public function filter(Builder $builder): Collection
+    {
+        return app(IssuePipeline::class)
+            ->send($builder)
+            ->through($this->filters)
+            ->then(function(Builder $builder){
+                return $builder->paginate(10);
+            });
     }
 }

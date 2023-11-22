@@ -2,18 +2,64 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Http\Requests\SearchRequest;
+use App\Http\Controllers\Controller;
 use App\Services\SearchService;
+use App\Pipelines\Issue\Pipe\StatusPipe;
+use App\Pipelines\Issue\Pipe\EstimatePipe;
+use App\Pipelines\Issue\Pipe\ContentPipe;
+use Illuminate\Support\Collection;
+use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\DB;
 
 class SearchController extends Controller
 {
-    public function search(SearchRequest $request, SearchService $searchService)
+    /**
+     * @var Collection
+     */
+    private Collection $filters;
+
+    public function __construct() 
     {
-        $filters = $request->validated();
+        $this->filters = collect([
+            StatusPipe::class,
+            EstimatePipe::class,
+            ContentPipe::class
+        ]); 
+    }
 
-        $results = $searchService->applyFilters($filters);
+    /**
+     * @return JsonResponse
+     */
+    public function getFilters(): JsonResponse
+    {   
+        $filters = $this->filters
+            ->map(function($filter){
+                return [
+                    'name' => $filter::NAME,
+                    'conditions' => $filter::CONDITIONS,
+                    'values' => $filter::values()
+                ];
+            });
 
-        return response()->json($results);
+        return response()->json($filters);
+    }
+
+    /**
+     * Search through issues using pipeline by filters
+     * 
+     * @param SearchService $searchService
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function search(SearchService $searchService, Request $request): JsonResponse
+    {
+        $issueQueryBuilder = DB::table('issues');
+
+        $issues = $searchService
+            ->withFilters($this->filters)
+            ->filter($issueQueryBuilder);
+
+        return response()->json($issues);
     }
 }

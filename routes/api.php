@@ -21,5 +21,5 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 
 Route::prefix('search')->group(function () {
-    Route::get('/', [SearchController::class, 'search']);
+    Route::post('/', [SearchController::class, 'search']);
 });
