@@ -4,9 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Services\SearchService;
-use App\Pipelines\Issue\Pipe\StatusPipe;
-use App\Pipelines\Issue\Pipe\EstimatePipe;
-use App\Pipelines\Issue\Pipe\ContentPipe;
+use App\Filters\Issue\Pipe\StatusPipe;
+use App\Filters\Issue\Pipe\EstimatePipe;
+use App\Filters\Issue\Pipe\ContentPipe;
 use Illuminate\Support\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;

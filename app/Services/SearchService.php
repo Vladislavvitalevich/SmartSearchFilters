@@ -20,7 +20,7 @@ class SearchService
     public function withFilters(Collection $filters): SearchService
     {
         $this->filters = $filters;
-
+        
         return $this;
     }
 
@@ -28,14 +28,13 @@ class SearchService
      * Filter issues according to requested criteria
      * 
      * @param Builder $builder
-     * @return Collection
      */
-    public function filter(Builder $builder): Collection
+    public function filter(Builder $builder)
     {
         return app(IssuePipeline::class)
             ->send($builder)
-            ->through($this->filters)
-            ->then(function(Builder $builder){
+            ->through($this->filters->toArray())
+            ->then(function($builder) {
                 return $builder->paginate(10);
             });
     }

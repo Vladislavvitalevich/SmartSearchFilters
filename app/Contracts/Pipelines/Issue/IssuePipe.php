@@ -10,7 +10,6 @@ interface IssuePipe
     /**
      * @param Builder $builder
      * @param Closure $next
-     * @return null|Closure
      */
-    public function filter(Builder $builder, Closure $next): ?Closure;
+    public function filter(Builder $builder, Closure $next);
 }

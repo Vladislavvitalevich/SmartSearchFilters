@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Pipelines\Issue\Pipe;
+namespace App\Filters\Issue\Pipe;
 
 use App\Filters\Issue\Pipe\BasePipe;
 use Illuminate\Database\Query\Builder;
@@ -15,7 +15,7 @@ class EstimatePipe extends BasePipe
      * 
      * @var string
      */
-    const NAME = 'esimate';
+    const NAME = 'story_points';
 
     /**
      * List of available conditions that might be applied to the values
@@ -46,13 +46,15 @@ class EstimatePipe extends BasePipe
     /**
      * @inheritdoc
      */
-    public function filter(Builder $builder, Closure $next): ?Closure
+    public function filter(Builder $builder, Closure $next)
     {
         if (! $this->request->filled(self::NAME) ) {
             return $next($builder);
         }
 
         $filter = $this->request->input(self::NAME);
+
+        info(self::NAME.'-'.json_encode($filter));
 
         switch ($filter['condition']) {
             case self::CONDITION_IN:

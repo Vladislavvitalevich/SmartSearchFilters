@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Pipelines\Issue\Pipe;
+namespace App\Filters\Issue\Pipe;
 
 use App\Filters\Issue\Pipe\BasePipe;
 use Illuminate\Database\Query\Builder;
@@ -60,29 +60,31 @@ class StatusPipe extends BasePipe
     /**
      * @inheritdoc
      */
-    public function filter(Builder $builder, Closure $next): ?Closure
+    public function filter(Builder $builder, Closure $next)
     {
         if (! $this->request->filled(self::NAME) ) {
             return $next($builder);
         }
 
         $filter = $this->request->input(self::NAME);
+        
+        info(self::NAME.'-'.json_encode($filter));
 
         switch ($filter['condition']) {
             case self::CONDITION_IN:
-                $builder->whereIn('status', $filter['value']);
+                $builder->whereIn('status_id', $filter['value']);
                 break;
 
             case self::CONDITION_NOT_IN:
-                $builder->whereNotIn('status', $filter['value']);
+                $builder->whereNotIn('status_id', $filter['value']);
                 break;
             
             case self::CONDITION_IS:
-                $builder->where('status', $filter['value']);
+                $builder->where('status_id', $filter['value']);
                 break;
 
             case self::CONDITION_IS_NOT:
-                $builder->where('status', '<>', $filter['value']);
+                $builder->where('status_id', '<>', $filter['value']);
                 break;
         }
 

@@ -39,5 +39,5 @@ abstract class BasePipe implements IssuePipe
     /**
      * @inheritdoc
      */
-    abstract public function filter(Builder $builder, Closure $next): ?Closure;
+    abstract public function filter(Builder $builder, Closure $next);
 }
