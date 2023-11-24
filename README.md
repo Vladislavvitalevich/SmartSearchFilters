@@ -44,22 +44,22 @@
     
     BODY
     {
-    "status": {
-        "condition": "in",
-        "value": [
-            "backlog",
-            "todo",
-            "in progress",
-            "done"
-        ]
-    },
-    "story_points": {
-        "condition": "is",
-        "value": 3
-    },
-    "content": {
-        "condition": "contains",
-        "value": "reprehenderit"
+        "status": {
+            "condition": "in",
+            "value": [
+                "backlog",
+                "todo",
+                "in progress",
+                "done"
+            ]
+        },
+        "story_points": {
+            "condition": "is",
+            "value": 3
+        },
+        "content": {
+            "condition": "contains",
+            "value": "reprehenderit"
+        }
     }
-}
 </p>
